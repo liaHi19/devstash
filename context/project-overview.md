@@ -483,6 +483,13 @@ model TagOnItem {
 | Image   | `Image`       | 🩷 Pink    | `#ec4899` |
 | Link    | `Link`        | 🟢 Emerald | `#10b981` |
 
+### Screenshots
+
+Refer to the screenshots below as a base the dashboard ui. It does not to be exact. Use it as a reference:
+
+- @context/screenshots/dashboard-ui-main.png
+- @context/screenshots/dashboard-ui-drawer.png
+
 ### Responsive
 
 - **Desktop-first**, mobile usable.
