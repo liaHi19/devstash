@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { TopBar } from "@/components/dashboard/TopBar";
-import { Sidebar } from "@/components/dashboard/sidebar/index";
+import { TopBar } from "@/components/layout/TopBar";
+import { Sidebar } from "@/components/layout/sidebar/index";
 import useMobile from "../hooks/useMobile";
 
 export default function DashboardLayout({
