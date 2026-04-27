@@ -1,7 +1,8 @@
 import { FolderPlus, Plus, Search, SlidersHorizontal } from "lucide-react";
 
-import { ThemeToggle } from "@/components/dashboard/theme-toggle";
-import { ViewModeToggle } from "@/components/dashboard/view-mode-toggle";
+import { PageTitle } from "@/components/dashboard/PageTitle";
+import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
+import { ViewModeToggle } from "@/components/dashboard/ViewModeToggle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,10 +13,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 
-export function TopBar() {
+interface TopBarProps {
+  sidebarOpen: boolean;
+  isMobile: boolean;
+  setSidebarOpen: (sidebarOpen: boolean) => void;
+}
+
+export function TopBar({ sidebarOpen, isMobile, setSidebarOpen }: TopBarProps) {
   return (
     <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-2 md:h-14 md:flex-nowrap md:gap-4 md:py-0 md:px-6">
-      <h1 className="text-lg font-semibold tracking-tight">DevStash</h1>
+      {!sidebarOpen && (
+        <PageTitle
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          isTopBar={!isMobile}
+        />
+      )}
 
       <search className="relative order-3 block w-full md:order-2 md:mx-auto md:w-full md:max-w-xl">
         <Search
@@ -43,7 +56,7 @@ export function TopBar() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="icon" aria-label="Create new">
+            <Button variant="ghost" size="icon" aria-label="Create new">
               <Plus className="size-4" />
             </Button>
           </DropdownMenuTrigger>
