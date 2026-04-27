@@ -1,7 +1,7 @@
 import { FolderPlus, Plus, Search, SlidersHorizontal } from "lucide-react";
 
 import { PageTitle } from "@/components/layout/PageTitle";
-import { ThemeToggle } from "@/components/dashboard/ThemeToggle";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { ViewModeToggle } from "@/components/layout/ViewModeToggle";
 import { Button } from "@/components/ui/button";
 import {
