@@ -4,7 +4,7 @@
 
 - Strict mode enabled
 - No `any` types - use proper typing or `unknown`
-- Define interfaces for all props, API responses, and data models
+- Define types over interfaces for all props, API responses, and data models
 - Use type inference where obvious, explicit types where helpful
 
 ## React
@@ -38,15 +38,6 @@
 - Use CSS custom properties for colors, spacing, etc.
 - No JavaScript-based config allowed
 
-Example v4 configuration:
-
-```css
-@import "tailwindcss";
-
-@theme {
-  --color-primary: oklch(50% 0.2 250);
-}
-
 ## File Organization
 
 - Components: `src/components/[feature]/ComponentName.tsx`
@@ -54,6 +45,7 @@ Example v4 configuration:
 - Server Actions: `src/actions/[feature].ts`
 - Types: `src/types/[feature].ts`
 - Lib/Utils: `src/lib/[utility].ts`
+- Props: `src/components/[feature]/FeatureNameProps.ts`
 
 ## Naming
 
@@ -94,4 +86,3 @@ Example v4 configuration:
 - No commented-out code unless specified
 - No unused imports or variables
 - Keep functions under 50 lines when possible
-```
