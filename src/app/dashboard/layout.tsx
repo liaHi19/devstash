@@ -15,14 +15,14 @@ export default function DashboardLayout({
   const { isMobile } = useMobile();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-dvh">
       <Sidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         isMobile={isMobile}
       />
 
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col overflow-y-auto">
         <TopBar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}

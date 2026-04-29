@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${geistMono.variable} antialiased`}
       suppressHydrationWarning
     >
       <body suppressHydrationWarning>
@@ -36,9 +36,7 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <div className="min-h-full flex flex-col bg-background text-foreground">
-            {children}
-          </div>
+          <div className="bg-background text-foreground">{children}</div>
         </ThemeProvider>
       </body>
     </html>
