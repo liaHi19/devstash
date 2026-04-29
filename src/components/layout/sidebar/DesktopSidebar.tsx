@@ -13,15 +13,14 @@ export function DesktopSidebar({
     <aside
       data-state={sidebarOpen ? "open" : "closed"}
       className={cn(
-        "hidden md:flex flex-col min-h-screen border-r border-sidebar-border bg-sidebar text-sidebar-foreground data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        "hidden self-auto md:flex flex-col h-screen border-r border-sidebar-border bg-sidebar text-sidebar-foreground data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
         sidebarOpen ? "w-72" : "w-14 overflow-hidden",
       )}
-      aria-hidden={!sidebarOpen}
     >
       <div
         className={cn(
-          "flex items-center border-b border-sidebar-border md:h-14",
-          sidebarOpen ? "px-4 md:px-6" : "justify-center px-2",
+          "flex items-center border-b border-sidebar-border md:h-14 px-6",
+          !sidebarOpen && "justify-center",
         )}
       >
         <PageTitle
