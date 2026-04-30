@@ -1,10 +1,8 @@
 # Current Feature
 
-## Goals
-
 ## Status
 
-Completed
+## Goals
 
 ## History
 
@@ -20,3 +18,4 @@ Completed
 - 2026-04-29 — Completed Seed Data: added `password String?` to `User` (migration `20260429173405_add_user_password`) since the spec requires a hashed credentials password and there was no column for it; new `prisma/seed.ts` (own `PrismaClient` + `PrismaNeon` adapter — `src/lib/db.ts` is `server-only` and won't load outside Next.js) hashes `12345678` with `bcryptjs` (12 rounds) and upserts the demo user, upserts all 7 system `ItemType` rows (system types use `findFirst` since the `[userId, name]` compound unique has a nullable `userId` that Prisma's `where` can't target with `null`), then resets the user's items + collections and recreates the 5 collections (React Patterns / AI Workflows / DevOps / Terminal Commands / Design Resources, 18 items total) with `defaultTypeId` and `ItemCollection` joins; wired `migrations.seed: "tsx prisma/seed.ts"` in `prisma.config.ts` (Prisma 7 reads seed config from there, not `package.json`), added `db:seed` script and `tsx` dev dep (Prisma 7's generated client uses extensionless ESM imports that `node --experimental-strip-types` can't resolve), enabled `allowImportingTsExtensions` in `tsconfig.json` so `scripts/test-db.ts` no longer fails type-check.
 - 2026-04-30 — Completed Dashboard Collections: created `src/lib/db/collections.ts` (`server-only`) with `getRecentCollections(limit)` (fetches collections with items + itemTypes, computes dominant type by count and collects all distinct types) and `getCollectionStats()` (total + favorites count); `CollectionsSection` is now an async server component fetching real data; `CollectionCard` accepts `CollectionWithStats` (drops mock-data import), shows dominant-type border/icon/badge and a small-icon row for all types present; `StatsCards` is now async and uses `getCollectionStats()` for the Collections and Favorite Collections tiles while items stats remain on mock data.
 - 2026-04-30 — Completed Dashboard Items: created `src/lib/db/items.ts` (`server-only`) with `getRecentItems(limit)`, `getPinnedItems()`, `getFavoriteItems()`, and `getItemStats()` (all include `itemType` and nested `tags.tag`); new `ItemsSectionWrapper` async server component fetches all three item lists in parallel and passes them to `ItemsSection`; pinned tab receives `null` when no pinned items exist (shows nothing); `ItemCard` drops mock-data import, uses `item.itemType` directly for icon/color, handles nullable `content` by falling back to `url`, maps `item.tags` (DB shape: `{ tag: { name } }[]`) to tag names; `ItemList` updated to `ItemWithType[]`; `StatsCards` now fetches both item and collection stats from the DB via `Promise.all`; `dashboard/page.tsx` simplified to just `<StatsCards /> <ItemsSectionWrapper /> <CollectionsSection />`.
+- 2026-04-30 — Completed Tags Fix: added standalone `ITEM_TAGS: Record<string, string[]>` mapping to `prisma/seed.ts` (13 of 18 items tagged, 5 left untagged); after items are seeded, all unique tag names are upserted into the `Tag` table via `prisma.tag.upsert`; `TagOnItem` rows are then created by building an `itemIdByTitle` map from the freshly inserted items and iterating `ITEM_TAGS`; no migration needed — `Tag` and `TagOnItem` tables already existed in the initial migration; seed output: 27 tags, 37 tag links.
