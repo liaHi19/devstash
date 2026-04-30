@@ -1,5 +1,3 @@
-# Seed Data Specification
-
 ## Overview
 
 Update a seed script (`prisma/seed.ts`) to populate tag and TagsOnItem tables

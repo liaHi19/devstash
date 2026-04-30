@@ -41,8 +41,7 @@ export async function ItemCard({ item }: ItemCardProps) {
       ? `${rawContent.slice(0, 160).trimEnd()}…`
       : rawContent;
 
-  const isCode =
-    itemType.name === "snippet" || itemType.name === "command";
+  const isCode = itemType.name === "snippet" || itemType.name === "command";
   const html =
     isCode && item.content
       ? await highlight(item.content, item.language ?? undefined)
