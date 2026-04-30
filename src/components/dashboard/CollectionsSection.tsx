@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
-import { collections } from "@/lib/mock-data";
+import { getRecentCollections } from "@/lib/db/collections";
 
-const recentCollections = collections;
+export async function CollectionsSection() {
+  const collections = await getRecentCollections(6);
 
-export function CollectionsSection() {
   return (
     <section className="flex flex-col gap-3">
       <header className="flex items-center justify-between">
@@ -18,13 +18,13 @@ export function CollectionsSection() {
         </Link>
       </header>
 
-      {recentCollections.length === 0 ? (
+      {collections.length === 0 ? (
         <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
           No collections yet.
         </p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {recentCollections.map((c) => (
+          {collections.map((c) => (
             <CollectionCard key={c.id} collection={c} />
           ))}
         </div>

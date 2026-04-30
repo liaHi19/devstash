@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
-import { itemTypes, type Collection } from "@/lib/mock-data";
+import type { CollectionWithStats } from "@/lib/db/collections";
 
 const iconMap: Record<string, LucideIcon> = {
   Code,
@@ -25,13 +25,15 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 interface CollectionCardProps {
-  collection: Collection;
+  collection: CollectionWithStats;
 }
 
 export function CollectionCard({ collection }: CollectionCardProps) {
-  const type = itemTypes.find((t) => t.slug === collection.dominantTypeSlug);
-  const Icon = type ? (iconMap[type.icon] ?? Code) : Code;
-  const color = type?.color ?? "#6b7280";
+  const { dominantType, allTypes } = collection;
+  const DominantIcon = dominantType
+    ? (iconMap[dominantType.icon] ?? Code)
+    : Code;
+  const color = dominantType?.color ?? "#6b7280";
 
   return (
     <Link
@@ -39,13 +41,13 @@ export function CollectionCard({ collection }: CollectionCardProps) {
       className="group/collection rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <Card
-        className="border-t-2 transition-shadow group-hover/collection:ring-2 group-hover/collection:ring-foreground/20"
+        className="border-t-2 transition-shadow group-hover/collection:ring-2 group-hover/collection:ring-foreground/20 p-4 text-xs"
         style={{ borderTopColor: color }}
       >
-        <div className="flex items-start gap-2 px-4">
-          <Icon
+        <div className="flex items-start gap-2">
+          <DominantIcon
             aria-hidden
-            className="size-4 shrink-0"
+            className="size-5 shrink-0"
             style={{ color }}
           />
           <h3 className="flex-1 truncate text-sm font-semibold">
@@ -54,16 +56,33 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           {collection.isFavorite && (
             <Star
               aria-label="Favorite"
-              className="size-3.5 fill-yellow-400 text-yellow-400"
+              className="size-4 fill-yellow-400 text-yellow-400"
             />
           )}
         </div>
+        <div className="flex-1 flex flex-col gap-3 mb-1.5">
+          <p className="line-clamp-4 text-muted-foreground">
+            {collection.description}
+          </p>
 
-        <p className="line-clamp-2 px-4 text-xs text-muted-foreground">
-          {collection.description}
-        </p>
+          {allTypes.length > 0 && (
+            <div className="flex items-center gap-2">
+              {allTypes.map((t) => {
+                const TypeIcon = iconMap[t.icon] ?? Code;
+                return (
+                  <TypeIcon
+                    key={t.icon}
+                    aria-label={t.name}
+                    className="size-3.5"
+                    style={{ color: t.color }}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
 
-        <div className="flex items-center justify-between px-4 pb-1 text-xs">
+        <div className="flex items-center justify-between">
           <span
             className="rounded-md px-1.5 py-0.5 font-medium"
             style={{
@@ -71,7 +90,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
               color,
             }}
           >
-            {type?.pluralName.toLowerCase() ?? collection.dominantTypeSlug}
+            {dominantType?.name.toLowerCase() ?? "items"}
           </span>
           <span className="text-muted-foreground tabular-nums">
             {collection.itemCount} items
