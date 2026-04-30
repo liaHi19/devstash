@@ -1,7 +1,7 @@
 import { ItemCard } from "@/components/dashboard/ItemCard";
-import { type Item } from "@/lib/mock-data";
+import type { ItemWithType } from "@/lib/db/items";
 
-export function ItemList({ items }: { items: Item[] }) {
+export function ItemList({ items }: { items: ItemWithType[] }) {
   if (items.length === 0) {
     return (
       <p className="rounded-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">

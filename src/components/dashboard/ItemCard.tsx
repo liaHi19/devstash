@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
+import type { ItemWithType } from "@/lib/db/items";
 import { highlight } from "@/lib/highlight";
-import { itemTypes, type Item } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -27,19 +27,28 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 interface ItemCardProps {
-  item: Item;
+  item: ItemWithType;
 }
 
 export async function ItemCard({ item }: ItemCardProps) {
-  const type = itemTypes.find((t) => t.slug === item.typeSlug);
-  const Icon = type ? (iconMap[type.icon] ?? Code) : Code;
-  const color = type?.color ?? "#6b7280";
+  const { itemType } = item;
+  const Icon = iconMap[itemType.icon] ?? Code;
+  const color = itemType.color;
+
+  const rawContent = item.content ?? item.url ?? "";
   const preview =
-    item.content.length > 160
-      ? `${item.content.slice(0, 160).trimEnd()}…`
-      : item.content;
-  const isCode = item.typeSlug === "snippet" || item.typeSlug === "command";
-  const html = isCode ? await highlight(item.content, item.language) : null;
+    rawContent.length > 160
+      ? `${rawContent.slice(0, 160).trimEnd()}…`
+      : rawContent;
+
+  const isCode =
+    itemType.name === "snippet" || itemType.name === "command";
+  const html =
+    isCode && item.content
+      ? await highlight(item.content, item.language ?? undefined)
+      : null;
+
+  const tagNames = item.tags.map((t) => t.tag.name);
 
   return (
     <Card
@@ -81,9 +90,10 @@ export async function ItemCard({ item }: ItemCardProps) {
           </pre>
         )}
       </div>
+
       <div className="flex items-center justify-between pb-1">
         <div className="flex items-center gap-1.5 text-xs">
-          {item.tags.slice(0, 3).map((tag) => (
+          {tagNames.slice(0, 3).map((tag) => (
             <span
               key={tag}
               className="rounded-md bg-muted px-1.5 py-0.5 text-muted-foreground"
@@ -99,7 +109,7 @@ export async function ItemCard({ item }: ItemCardProps) {
             borderColor: color,
           }}
         >
-          {type?.name.toLowerCase() ?? item.typeSlug}
+          {itemType.name.toLowerCase()}
         </span>
       </div>
     </Card>
