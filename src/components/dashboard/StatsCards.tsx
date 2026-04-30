@@ -2,13 +2,13 @@ import { Bookmark, Files, FolderOpen, Star } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/StatsCard";
 import { getCollectionStats } from "@/lib/db/collections";
-import { items } from "@/lib/mock-data";
+import { getItemStats } from "@/lib/db/items";
 
 export async function StatsCards() {
-  const totalItems = items.length;
-  const favoriteItems = items.filter((i) => i.isFavorite).length;
-  const { total: totalCollections, favorites: favoriteCollections } =
-    await getCollectionStats();
+  const [
+    { total: totalItems, favorites: favoriteItems },
+    { total: totalCollections, favorites: favoriteCollections },
+  ] = await Promise.all([getItemStats(), getCollectionStats()]);
 
   return (
     <section className="grid grid-cols-2 gap-3 md:grid-cols-4">
