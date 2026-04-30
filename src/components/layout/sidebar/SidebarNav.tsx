@@ -18,13 +18,9 @@ import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  collections,
-  currentUser,
-  itemTypes,
-  items,
-  type ItemTypeSlug,
-} from "@/lib/mock-data";
+import type { SidebarCollection } from "@/lib/db/collections";
+import type { SidebarItemType } from "@/lib/db/items";
+import { currentUser } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -37,14 +33,23 @@ const iconMap: Record<string, LucideIcon> = {
   Link: LinkIcon,
 };
 
-function countByType(slug: ItemTypeSlug) {
-  return items.filter((i) => i.typeSlug === slug).length;
+function toPlural(name: string) {
+  return name.charAt(0).toUpperCase() + name.slice(1) + "s";
 }
 
-const favoriteCollections = collections.filter((c) => c.isFavorite);
-const recentCollections = collections.slice(0, 3);
+type SidebarNavProps = {
+  itemTypes: SidebarItemType[];
+  recentCollections: SidebarCollection[];
+  favoriteCollections: SidebarCollection[];
+  onNavigate?: () => void;
+};
 
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+export function SidebarNav({
+  itemTypes,
+  recentCollections,
+  favoriteCollections,
+  onNavigate,
+}: SidebarNavProps) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
   const [favoritesOpen, setFavoritesOpen] = useState(true);
 
@@ -61,7 +66,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               return (
                 <li key={t.id}>
                   <Link
-                    href={`/items/${t.slug}s`}
+                    href={`/items/${t.name}s`}
                     onClick={onNavigate}
                     className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   >
@@ -70,9 +75,9 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                       className="size-4 shrink-0"
                       style={{ color: t.color }}
                     />
-                    <span className="flex-1 truncate">{t.pluralName}</span>
+                    <span className="flex-1 truncate">{toPlural(t.name)}</span>
                     <span className="text-xs text-muted-foreground tabular-nums">
-                      {countByType(t.slug)}
+                      {t.count}
                     </span>
                   </Link>
                 </li>
@@ -102,30 +107,27 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               Recent
             </h4>
             <ul className="flex flex-col gap-0.5">
-              {recentCollections.map((c) => {
-                const type = itemTypes.find(
-                  (t) => t.slug === c.dominantTypeSlug,
-                );
-                return (
-                  <li key={c.id}>
-                    <Link
-                      href={`/collections/${c.id}`}
-                      onClick={onNavigate}
-                      className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    >
-                      <span
-                        aria-hidden
-                        className="size-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: type?.color }}
-                      />
-                      <span className="flex-1 truncate">{c.name}</span>
-                      <span className="text-xs text-muted-foreground tabular-nums">
-                        {c.itemCount}
-                      </span>
-                    </Link>
-                  </li>
-                );
-              })}
+              {recentCollections.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    href={`/collections/${c.id}`}
+                    onClick={onNavigate}
+                    className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  >
+                    <span
+                      aria-hidden
+                      className="size-2 shrink-0 rounded-full"
+                      style={{
+                        backgroundColor: c.dominantColor ?? "currentColor",
+                      }}
+                    />
+                    <span className="flex-1 truncate">{c.name}</span>
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {c.itemCount}
+                    </span>
+                  </Link>
+                </li>
+              ))}
             </ul>
 
             <button
@@ -135,7 +137,6 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
               className="mt-2 flex w-full items-center justify-between gap-1 px-2 pt-1 pb-1 text-xs font-medium tracking-wider text-muted-foreground uppercase hover:text-sidebar-foreground"
             >
               <span className="text-left">Favorites</span>
-
               <ChevronDown
                 aria-hidden
                 className={cn(
@@ -150,35 +151,40 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                 !favoritesOpen && "hidden",
               )}
             >
-              {favoriteCollections.map((c) => {
-                const type = itemTypes.find(
-                  (t) => t.slug === c.dominantTypeSlug,
-                );
-                return (
-                  <li key={c.id}>
-                    <Link
-                      href={`/collections/${c.id}`}
-                      onClick={onNavigate}
-                      className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                    >
-                      <span
-                        aria-hidden
-                        className="size-2 shrink-0 rounded-full"
-                        style={{ backgroundColor: type?.color }}
-                      />
-                      <span className="flex-1 truncate">{c.name}</span>
-                      <span className="text-xs text-muted-foreground tabular-nums">
-                        {c.itemCount}
-                      </span>
-                      <Star
-                        aria-hidden
-                        className="size-3 fill-yellow-400 text-yellow-400"
-                      />
-                    </Link>
-                  </li>
-                );
-              })}
+              {favoriteCollections.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    href={`/collections/${c.id}`}
+                    onClick={onNavigate}
+                    className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  >
+                    <span
+                      aria-hidden
+                      className="size-2 shrink-0 rounded-full"
+                      style={{
+                        backgroundColor: c.dominantColor ?? "currentColor",
+                      }}
+                    />
+                    <span className="flex-1 truncate">{c.name}</span>
+                    <span className="text-xs text-muted-foreground tabular-nums">
+                      {c.itemCount}
+                    </span>
+                    <Star
+                      aria-hidden
+                      className="size-3 fill-yellow-400 text-yellow-400"
+                    />
+                  </Link>
+                </li>
+              ))}
             </ul>
+
+            <Link
+              href="/collections"
+              onClick={onNavigate}
+              className="mt-2 flex items-center px-2 py-1.5 text-xs text-muted-foreground hover:text-sidebar-foreground"
+            >
+              View all collections →
+            </Link>
           </div>
         </section>
       </div>
