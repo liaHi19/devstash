@@ -49,6 +49,23 @@ type SeedCollection = {
   items: SeedItem[];
 };
 
+// Tag names per item, keyed by item title. Items not listed here remain untagged.
+const ITEM_TAGS: Record<string, string[]> = {
+  "useDebounce Hook": ["react", "hooks", "typescript", "performance"],
+  "ThemeContext Provider": ["react", "context", "typescript", "theme"],
+  "Code Review Prompt": ["ai", "code-review", "prompt"],
+  "Documentation Generation Prompt": ["ai", "documentation", "prompt"],
+  "Multi-stage Node Dockerfile": ["docker", "nodejs", "deployment"],
+  "Deploy to production (Vercel)": ["vercel", "deployment", "cli"],
+  "GitHub Actions Docs": ["github", "ci-cd", "documentation"],
+  "Undo last commit (keep changes staged)": ["git", "version-control"],
+  "Stop and remove all Docker containers": ["docker", "cleanup"],
+  "List globally installed npm packages": ["npm", "nodejs"],
+  "Tailwind CSS Docs": ["tailwind", "css", "documentation"],
+  "shadcn/ui": ["ui", "components", "shadcn"],
+  "Lucide Icons": ["icons", "ui"],
+};
+
 const COLLECTIONS: SeedCollection[] = [
   {
     name: "React Patterns",
@@ -424,9 +441,45 @@ async function main() {
       console.log(`  • ${c.name} (${c.items.length} items)`);
     }
 
+    console.log("→ Upserting tags");
+    const allTagNames = [...new Set(Object.values(ITEM_TAGS).flat())];
+    const tagByName = new Map<string, string>();
+    for (const name of allTagNames) {
+      const tag = await prisma.tag.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      });
+      tagByName.set(name, tag.id);
+    }
+
+    console.log("→ Linking tags to items via TagOnItem");
+    const userItems = await prisma.item.findMany({
+      where: { userId: user.id },
+      select: { id: true, title: true },
+    });
+    const itemIdByTitle = new Map(userItems.map((i) => [i.title, i.id]));
+
+    let tagLinkCount = 0;
+    for (const [title, tagNames] of Object.entries(ITEM_TAGS)) {
+      const itemId = itemIdByTitle.get(title);
+      if (!itemId) {
+        console.warn(`  ⚠ ITEM_TAGS references unknown item "${title}"`);
+        continue;
+      }
+      for (const tagName of tagNames) {
+        const tagId = tagByName.get(tagName);
+        if (!tagId) throw new Error(`Missing tag ${tagName}`);
+        await prisma.tagOnItem.create({
+          data: { itemId, tagId },
+        });
+        tagLinkCount++;
+      }
+    }
+
     console.log("");
     console.log(
-      `✓ Seed complete — user ${user.email}, ${COLLECTIONS.length} collections, ${itemCount} items, ${SYSTEM_TYPES.length} system types`,
+      `✓ Seed complete — user ${user.email}, ${COLLECTIONS.length} collections, ${itemCount} items, ${SYSTEM_TYPES.length} system types, ${allTagNames.length} tags, ${tagLinkCount} tag links`,
     );
   } catch (error) {
     console.error("✗ Seed failed:");
