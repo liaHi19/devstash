@@ -1,20 +1,21 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   ChevronDown,
   Code,
   File as FileIcon,
   Image as ImageIcon,
   Link as LinkIcon,
+  type LucideIcon,
   Settings,
   Sparkles,
   Star,
   StickyNote,
   Terminal,
-  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

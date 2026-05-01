@@ -3,11 +3,11 @@ import {
   File as FileIcon,
   Image as ImageIcon,
   Link as LinkIcon,
+  type LucideIcon,
   Sparkles,
   Star,
   StickyNote,
   Terminal,
-  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 

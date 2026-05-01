@@ -3,12 +3,12 @@ import {
   File as FileIcon,
   Image as ImageIcon,
   Link as LinkIcon,
+  type LucideIcon,
   Pin,
   Sparkles,
   Star,
   StickyNote,
   Terminal,
-  type LucideIcon,
 } from "lucide-react";
 
 import { Card } from "@/components/ui/card";

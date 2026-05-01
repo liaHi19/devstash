@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 import useMobile from "@/app/hooks/useMobile";
-import { TopBar } from "@/components/layout/TopBar";
 import { Sidebar } from "@/components/layout/sidebar/index";
 import type { SidebarData } from "@/components/layout/sidebar/SidebarProps";
+import { TopBar } from "@/components/layout/TopBar";
 
 type Props = SidebarData & { children: React.ReactNode };
 

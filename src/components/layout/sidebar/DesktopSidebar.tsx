@@ -1,10 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { SidebarWithNavProps } from "./SidebarProps";
+import { PanelLeft, PanelLeftClose } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { PanelLeft, PanelLeftClose } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+import { SidebarWithNavProps } from "./SidebarProps";
 
 export function DesktopSidebar({
   sidebarOpen,

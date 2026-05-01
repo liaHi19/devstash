@@ -12,10 +12,7 @@ export function Sidebar({
 }: SidebarProps) {
   return isMobile ? (
     <MobileSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-      <SidebarNav
-        {...sidebarData}
-        onNavigate={() => setSidebarOpen(false)}
-      />
+      <SidebarNav {...sidebarData} onNavigate={() => setSidebarOpen(false)} />
     </MobileSidebar>
   ) : (
     <DesktopSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>

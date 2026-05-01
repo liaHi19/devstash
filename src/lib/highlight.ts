@@ -1,6 +1,6 @@
-import "server-only";
+import { type BundledLanguage, codeToHtml } from "shiki";
 
-import { codeToHtml, type BundledLanguage } from "shiki";
+import "server-only";
 
 const supported = new Set<BundledLanguage>([
   "typescript",

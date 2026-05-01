@@ -1,6 +1,6 @@
-import "server-only";
-
 import { prisma } from "@/lib/db";
+
+import "server-only";
 
 const TYPE_ORDER = [
   "snippet",
@@ -27,9 +27,7 @@ export async function getSidebarItemTypes(): Promise<SidebarItemType[]> {
   });
 
   return types
-    .sort(
-      (a, b) => TYPE_ORDER.indexOf(a.name) - TYPE_ORDER.indexOf(b.name),
-    )
+    .sort((a, b) => TYPE_ORDER.indexOf(a.name) - TYPE_ORDER.indexOf(b.name))
     .map((t) => ({
       id: t.id,
       name: t.name,
