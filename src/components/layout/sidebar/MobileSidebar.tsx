@@ -7,9 +7,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { SidebarWithNavProps } from "./SidebarProps";
-
 import { APP_NAME } from "@/lib/constants";
+
+import { SidebarWithNavProps } from "./SidebarProps";
 
 export function MobileSidebar({
   sidebarOpen,
