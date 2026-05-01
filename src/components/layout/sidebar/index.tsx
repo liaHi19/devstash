@@ -8,14 +8,22 @@ export function Sidebar({
   sidebarOpen,
   setSidebarOpen,
   isMobile,
+  sidebarData,
 }: SidebarProps) {
   return isMobile ? (
     <MobileSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-      <SidebarNav onNavigate={() => setSidebarOpen(false)} />
+      <SidebarNav
+        {...sidebarData}
+        onNavigate={() => setSidebarOpen(false)}
+      />
     </MobileSidebar>
   ) : (
     <DesktopSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
-      {sidebarOpen ? <SidebarNav /> : <SidebarRail />}
+      {sidebarOpen ? (
+        <SidebarNav {...sidebarData} />
+      ) : (
+        <SidebarRail itemTypes={sidebarData.itemTypes} />
+      )}
     </DesktopSidebar>
   );
 }

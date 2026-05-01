@@ -15,7 +15,8 @@ import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { currentUser, itemTypes } from "@/lib/mock-data";
+import type { SidebarItemType } from "@/lib/db/items";
+import { currentUser } from "@/lib/mock-data";
 
 const iconMap: Record<string, LucideIcon> = {
   Code,
@@ -27,18 +28,19 @@ const iconMap: Record<string, LucideIcon> = {
   Link: LinkIcon,
 };
 
-export function SidebarRail() {
+export function SidebarRail({ itemTypes }: { itemTypes: SidebarItemType[] }) {
   return (
     <div className="flex flex-1 flex-col">
       <ul className="flex flex-1 flex-col items-center gap-0.5 p-2">
         {itemTypes.map((t) => {
           const Icon = iconMap[t.icon] ?? Code;
+          const label = t.name.charAt(0).toUpperCase() + t.name.slice(1) + "s";
           return (
             <li key={t.id}>
               <Link
-                href={`/items/${t.slug}s`}
-                aria-label={t.pluralName}
-                title={t.pluralName}
+                href={`/items/${t.name}s`}
+                aria-label={label}
+                title={label}
                 className="flex size-9 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
                 <Icon
