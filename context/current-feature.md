@@ -3,17 +3,8 @@
 ## Code Audit Quick Wins
 
 ## Status
-Complete
 
 ## Goals
-
-- [x] Extract `iconMap` into a shared `src/lib/icon-map.ts` module — remove the four duplicate definitions in `ItemCard`, `CollectionCard`, `SidebarNav`, and `SidebarRail`
-- [x] Extract `toPlural` into a shared utility (e.g. `src/lib/utils.ts`) — currently defined in `SidebarNav.tsx` and inlined in `SidebarRail.tsx`
-- [x] Move `getSidebarItemTypes()` from `src/lib/db/items.ts` to a new `src/lib/db/item-types.ts` — it queries `ItemType`, not `Item`
-- [x] Add `Suspense` boundaries around `StatsCards`, `ItemsSectionWrapper`, and `CollectionsSection` in `dashboard/page.tsx` so each section streams independently
-- [x] Scope all Prisma queries in `src/lib/db/items.ts` and `src/lib/db/collections.ts` to a `userId` parameter — currently all queries return data for ALL users (will become a data leak once auth lands)
-- [x] Pass only `preview` (160-char slice) to `highlight()` in `ItemCard` instead of the full `item.content`; avoids shiki parsing potentially large strings just to CSS-clip them
-- [x] Replace `interface` with `type` in `TopBar`, `ItemCard`, `CollectionCard`, `ItemsSection`, and `StatsCard` props — coding standards require `type` over `interface`
 
 ## History
 
