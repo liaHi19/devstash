@@ -1,8 +1,14 @@
-# Current Feature
+# Current Feature: Add Pro Badge to Sidebar
 
 ## Status
 
+Complete
+
 ## Goals
+
+- Add a shadcn `Badge` component next to the `file` and `image` item types in the sidebar nav
+- Badge displays "PRO" (all uppercase)
+- Badge is clean and subtle — does not overpower the type label
 
 ## History
 
@@ -20,3 +26,4 @@
 - 2026-04-30 — Completed Dashboard Items: created `src/lib/db/items.ts` (`server-only`) with `getRecentItems(limit)`, `getPinnedItems()`, `getFavoriteItems()`, and `getItemStats()` (all include `itemType` and nested `tags.tag`); new `ItemsSectionWrapper` async server component fetches all three item lists in parallel and passes them to `ItemsSection`; pinned tab receives `null` when no pinned items exist (shows nothing); `ItemCard` drops mock-data import, uses `item.itemType` directly for icon/color, handles nullable `content` by falling back to `url`, maps `item.tags` (DB shape: `{ tag: { name } }[]`) to tag names; `ItemList` updated to `ItemWithType[]`; `StatsCards` now fetches both item and collection stats from the DB via `Promise.all`; `dashboard/page.tsx` simplified to just `<StatsCards /> <ItemsSectionWrapper /> <CollectionsSection />`.
 - 2026-04-30 — Completed Tags Fix: added standalone `ITEM_TAGS: Record<string, string[]>` mapping to `prisma/seed.ts` (13 of 18 items tagged, 5 left untagged); after items are seeded, all unique tag names are upserted into the `Tag` table via `prisma.tag.upsert`; `TagOnItem` rows are then created by building an `itemIdByTitle` map from the freshly inserted items and iterating `ITEM_TAGS`; no migration needed — `Tag` and `TagOnItem` tables already existed in the initial migration; seed output: 27 tags, 37 tag links.
 - 2026-04-30 — Completed Stats & Sidebar: added `getSidebarItemTypes()` (system types ordered by canonical sequence with per-type item counts via `_count`) and `getSidebarCollections()` (recent 3 + all favorites, each with dominant type color) to their respective `src/lib/db/` files; `dashboard/layout.tsx` converted to an async server component that fetches sidebar data and passes it as serializable props to new `DashboardShell` (client) which owns `sidebarOpen` / `isMobile` state; `SidebarProps` extended with `SidebarData` type; `Sidebar/index.tsx` threads `sidebarData` to `SidebarNav` (with `onNavigate`) and `SidebarRail`; `SidebarNav` refactored to accept `itemTypes`, `recentCollections`, `favoriteCollections`, `onNavigate` props (drops mock-data import); `SidebarRail` updated to accept `itemTypes` prop; added "View all collections →" link in the collections section.
+- 2026-05-02 — Completed Add Pro Badge to Sidebar: installed shadcn `badge` component; added an `outline` variant `Badge` displaying "PRO" next to the `file` and `image` item type entries in `SidebarNav` — positioned between the type label and the item count, styled small (`h-4`, `text-[10px]`) and muted so it reads as a subtle indicator without disrupting the nav layout.
