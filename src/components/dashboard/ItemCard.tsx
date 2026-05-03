@@ -1,38 +1,18 @@
-import {
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  type LucideIcon,
-  Pin,
-  Sparkles,
-  Star,
-  StickyNote,
-  Terminal,
-} from "lucide-react";
+import { Pin, Star } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import type { ItemWithType } from "@/lib/db/items";
 import { highlight } from "@/lib/highlight";
+import { DefaultIcon, iconMap } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
 
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File: FileIcon,
-  Image: ImageIcon,
-  Link: LinkIcon,
-};
-
-interface ItemCardProps {
+type ItemCardProps = {
   item: ItemWithType;
-}
+};
 
 export async function ItemCard({ item }: ItemCardProps) {
   const { itemType } = item;
-  const Icon = iconMap[itemType.icon] ?? Code;
+  const Icon = iconMap[itemType.icon] ?? DefaultIcon;
   const color = itemType.color;
 
   const rawContent = item.content ?? item.url ?? "";
@@ -43,8 +23,8 @@ export async function ItemCard({ item }: ItemCardProps) {
 
   const isCode = itemType.name === "snippet" || itemType.name === "command";
   const html =
-    isCode && item.content
-      ? await highlight(item.content, item.language ?? undefined)
+    isCode && preview
+      ? await highlight(preview, item.language ?? undefined)
       : null;
 
   const tagNames = item.tags.map((t) => t.tag.name);

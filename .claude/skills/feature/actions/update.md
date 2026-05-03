@@ -1,8 +1,9 @@
 # Update Action
 
-1. Switch to dev and pull origin dev
-2. Delete the local feature branch
-3. Reset current-feature.md:
+1. Switch to branch dev and pull origin dev
+2. If conflicts branches, allow user resolve the conflicts
+3. Delete the local feature branch
+4. Reset current-feature.md:
    - Change H1 back to `# Current Feature`
    - Clear Goals and Notes sections (keep placeholder comments)
-4. Commit the reset: `chore: reset current-feature.md after completing [feature]`
+5. Commit the reset: `chore: reset current-feature.md after completing [feature]`

@@ -19,9 +19,11 @@ export type CollectionWithStats = {
 };
 
 export async function getRecentCollections(
+  userId: string,
   limit = 6,
 ): Promise<CollectionWithStats[]> {
   const rows = await prisma.collection.findMany({
+    where: { userId },
     orderBy: { createdAt: "desc" },
     take: limit,
     include: {
@@ -83,7 +85,7 @@ export type SidebarCollection = {
   dominantColor: string | null;
 };
 
-export async function getSidebarCollections(): Promise<{
+export async function getSidebarCollections(userId: string): Promise<{
   recent: SidebarCollection[];
   favorites: SidebarCollection[];
 }> {
@@ -93,12 +95,13 @@ export async function getSidebarCollections(): Promise<{
 
   const [recentRaw, favoritesRaw] = await Promise.all([
     prisma.collection.findMany({
+      where: { userId },
       take: 3,
       orderBy: { createdAt: "desc" },
       include: collectionInclude,
     }),
     prisma.collection.findMany({
-      where: { isFavorite: true },
+      where: { userId, isFavorite: true },
       orderBy: { createdAt: "desc" },
       include: collectionInclude,
     }),
@@ -137,13 +140,12 @@ export async function getSidebarCollections(): Promise<{
   };
 }
 
-export async function getCollectionStats(): Promise<{
-  total: number;
-  favorites: number;
-}> {
+export async function getCollectionStats(
+  userId: string,
+): Promise<{ total: number; favorites: number }> {
   const [total, favorites] = await Promise.all([
-    prisma.collection.count(),
-    prisma.collection.count({ where: { isFavorite: true } }),
+    prisma.collection.count({ where: { userId } }),
+    prisma.collection.count({ where: { userId, isFavorite: true } }),
   ]);
   return { total, favorites };
 }

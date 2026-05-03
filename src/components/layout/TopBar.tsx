@@ -20,15 +20,15 @@ import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { APP_NAME } from "@/lib/constants";
 
-interface TopBarProps {
+type TopBarProps = {
   sidebarOpen: boolean;
   isMobile: boolean;
   setSidebarOpen: (sidebarOpen: boolean) => void;
-}
+};
 
 export function TopBar({ sidebarOpen, isMobile, setSidebarOpen }: TopBarProps) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-2 md:h-[var(--topbar-height)] md:flex-nowrap md:gap-4 md:py-0 md:px-6">
+    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-2 md:h-(--topbar-height) md:flex-nowrap md:gap-4 md:py-0 md:px-6">
       <div className="flex items-center gap-4">
         {isMobile && (
           <Button

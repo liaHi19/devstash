@@ -28,6 +28,7 @@ export async function highlight(
 
   const finalLang = (aliases[lang] ?? lang) as BundledLanguage;
   if (!supported.has(finalLang)) return null;
+
   return codeToHtml(code, {
     lang: finalLang,
     theme: "github-dark-default",

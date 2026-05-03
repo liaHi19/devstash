@@ -2,42 +2,17 @@
 
 import { useState } from "react";
 
-import {
-  ChevronDown,
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  type LucideIcon,
-  Settings,
-  Sparkles,
-  Star,
-  StickyNote,
-  Terminal,
-} from "lucide-react";
+import { ChevronDown, Settings, Star } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { SidebarCollection } from "@/lib/db/collections";
-import type { SidebarItemType } from "@/lib/db/items";
+import type { SidebarItemType } from "@/lib/db/item-types";
+import { DefaultIcon, iconMap } from "@/lib/icon-map";
 import { currentUser } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File: FileIcon,
-  Image: ImageIcon,
-  Link: LinkIcon,
-};
-
-function toPlural(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1) + "s";
-}
+import { cn, toPlural } from "@/lib/utils";
 
 type SidebarNavProps = {
   itemTypes: SidebarItemType[];
@@ -64,7 +39,7 @@ export function SidebarNav({
           </h3>
           <ul className="flex flex-col gap-0.5">
             {itemTypes.map((t) => {
-              const Icon = iconMap[t.icon] ?? Code;
+              const Icon = iconMap[t.icon] ?? DefaultIcon;
               return (
                 <li key={t.id}>
                   <Link
