@@ -1,8 +1,19 @@
 # Current Feature
 
+## Code Audit Quick Wins
+
 ## Status
+Complete
 
 ## Goals
+
+- [x] Extract `iconMap` into a shared `src/lib/icon-map.ts` module — remove the four duplicate definitions in `ItemCard`, `CollectionCard`, `SidebarNav`, and `SidebarRail`
+- [x] Extract `toPlural` into a shared utility (e.g. `src/lib/utils.ts`) — currently defined in `SidebarNav.tsx` and inlined in `SidebarRail.tsx`
+- [x] Move `getSidebarItemTypes()` from `src/lib/db/items.ts` to a new `src/lib/db/item-types.ts` — it queries `ItemType`, not `Item`
+- [x] Add `Suspense` boundaries around `StatsCards`, `ItemsSectionWrapper`, and `CollectionsSection` in `dashboard/page.tsx` so each section streams independently
+- [x] Scope all Prisma queries in `src/lib/db/items.ts` and `src/lib/db/collections.ts` to a `userId` parameter — currently all queries return data for ALL users (will become a data leak once auth lands)
+- [x] Pass only `preview` (160-char slice) to `highlight()` in `ItemCard` instead of the full `item.content`; avoids shiki parsing potentially large strings just to CSS-clip them
+- [x] Replace `interface` with `type` in `TopBar`, `ItemCard`, `CollectionCard`, `ItemsSection`, and `StatsCard` props — coding standards require `type` over `interface`
 
 ## History
 
@@ -21,3 +32,4 @@
 - 2026-04-30 — Completed Tags Fix: added standalone `ITEM_TAGS: Record<string, string[]>` mapping to `prisma/seed.ts` (13 of 18 items tagged, 5 left untagged); after items are seeded, all unique tag names are upserted into the `Tag` table via `prisma.tag.upsert`; `TagOnItem` rows are then created by building an `itemIdByTitle` map from the freshly inserted items and iterating `ITEM_TAGS`; no migration needed — `Tag` and `TagOnItem` tables already existed in the initial migration; seed output: 27 tags, 37 tag links.
 - 2026-04-30 — Completed Stats & Sidebar: added `getSidebarItemTypes()` (system types ordered by canonical sequence with per-type item counts via `_count`) and `getSidebarCollections()` (recent 3 + all favorites, each with dominant type color) to their respective `src/lib/db/` files; `dashboard/layout.tsx` converted to an async server component that fetches sidebar data and passes it as serializable props to new `DashboardShell` (client) which owns `sidebarOpen` / `isMobile` state; `SidebarProps` extended with `SidebarData` type; `Sidebar/index.tsx` threads `sidebarData` to `SidebarNav` (with `onNavigate`) and `SidebarRail`; `SidebarNav` refactored to accept `itemTypes`, `recentCollections`, `favoriteCollections`, `onNavigate` props (drops mock-data import); `SidebarRail` updated to accept `itemTypes` prop; added "View all collections →" link in the collections section.
 - 2026-05-02 — Completed Add Pro Badge to Sidebar: installed shadcn `badge` component; added an `outline` variant `Badge` displaying "PRO" next to the `file` and `image` item type entries in `SidebarNav` — positioned between the type label and the item count, styled small (`h-4`, `text-[10px]`) and muted so it reads as a subtle indicator without disrupting the nav layout.
+- 2026-05-03 — Completed Code Audit Quick Wins: extracted `iconMap` to `src/lib/icon-map.ts` (removes four duplicate definitions); added `toPlural` to `src/lib/utils.ts`; moved `getSidebarItemTypes()` to new `src/lib/db/item-types.ts`; wrapped `StatsCards`, `ItemsSectionWrapper`, and `CollectionsSection` in independent `Suspense` boundaries in `dashboard/page.tsx`; scoped all Prisma queries in `items.ts` and `collections.ts` to a `userId` parameter via new `src/lib/session.ts` (`getCurrentUserId`, React-cached, demo user lookup — swap for real auth session when NextAuth lands); `ItemCard` now passes only the 160-char `preview` slice to `highlight()`; replaced all `interface` prop types with `type` in `TopBar`, `ItemCard`, `CollectionCard`, `ItemsSection`, and `StatsCard`.

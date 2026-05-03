@@ -1,40 +1,22 @@
 "use client";
 
-import {
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  type LucideIcon,
-  Settings,
-  Sparkles,
-  StickyNote,
-  Terminal,
-} from "lucide-react";
+import { Settings } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import type { SidebarItemType } from "@/lib/db/items";
+import type { SidebarItemType } from "@/lib/db/item-types";
+import { DefaultIcon, iconMap } from "@/lib/icon-map";
 import { currentUser } from "@/lib/mock-data";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File: FileIcon,
-  Image: ImageIcon,
-  Link: LinkIcon,
-};
+import { toPlural } from "@/lib/utils";
 
 export function SidebarRail({ itemTypes }: { itemTypes: SidebarItemType[] }) {
   return (
     <div className="flex flex-1 flex-col">
       <ul className="flex flex-1 flex-col items-center gap-0.5 p-2">
         {itemTypes.map((t) => {
-          const Icon = iconMap[t.icon] ?? Code;
-          const label = t.name.charAt(0).toUpperCase() + t.name.slice(1) + "s";
+          const Icon = iconMap[t.icon] ?? DefaultIcon;
+          const label = toPlural(t.name);
           return (
             <li key={t.id}>
               <Link

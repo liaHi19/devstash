@@ -1,38 +1,19 @@
-import {
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  type LucideIcon,
-  Sparkles,
-  Star,
-  StickyNote,
-  Terminal,
-} from "lucide-react";
+import { Star } from "lucide-react";
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
 import type { CollectionWithStats } from "@/lib/db/collections";
+import { DefaultIcon, iconMap } from "@/lib/icon-map";
 
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File: FileIcon,
-  Image: ImageIcon,
-  Link: LinkIcon,
-};
-
-interface CollectionCardProps {
+type CollectionCardProps = {
   collection: CollectionWithStats;
-}
+};
 
 export function CollectionCard({ collection }: CollectionCardProps) {
   const { dominantType, allTypes } = collection;
   const DominantIcon = dominantType
-    ? (iconMap[dominantType.icon] ?? Code)
-    : Code;
+    ? (iconMap[dominantType.icon] ?? DefaultIcon)
+    : DefaultIcon;
   const color = dominantType?.color ?? "#6b7280";
 
   return (
@@ -68,7 +49,7 @@ export function CollectionCard({ collection }: CollectionCardProps) {
           {allTypes.length > 0 && (
             <div className="flex items-center gap-2">
               {allTypes.map((t) => {
-                const TypeIcon = iconMap[t.icon] ?? Code;
+                const TypeIcon = iconMap[t.icon] ?? DefaultIcon;
                 return (
                   <TypeIcon
                     key={t.icon}

@@ -2,12 +2,12 @@ import type { LucideIcon } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 
-interface StatsCardProps {
+type StatsCardProps = {
   icon: LucideIcon;
   count: number;
   label: string;
   color: string;
-}
+};
 
 export function StatsCard({ icon: Icon, count, label, color }: StatsCardProps) {
   return (
