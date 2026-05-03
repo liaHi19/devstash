@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { SidebarCollection } from "@/lib/db/collections";
 import type { SidebarItemType } from "@/lib/db/items";
@@ -77,6 +78,14 @@ export function SidebarNav({
                       style={{ color: t.color }}
                     />
                     <span className="flex-1 truncate">{toPlural(t.name)}</span>
+                    {(t.name === "file" || t.name === "image") && (
+                      <Badge
+                        variant="outline"
+                        className="h-4 rounded px-1 py-0 text-[10px] font-semibold tracking-wide text-muted-foreground"
+                      >
+                        PRO
+                      </Badge>
+                    )}
                     <span className="text-xs text-muted-foreground tabular-nums">
                       {t.count}
                     </span>
