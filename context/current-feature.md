@@ -1,14 +1,8 @@
-# Current Feature: Add Pro Badge to Sidebar
+# Current Feature
 
 ## Status
 
-Complete
-
 ## Goals
-
-- Add a shadcn `Badge` component next to the `file` and `image` item types in the sidebar nav
-- Badge displays "PRO" (all uppercase)
-- Badge is clean and subtle — does not overpower the type label
 
 ## History
 
