@@ -8,16 +8,17 @@ import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
 import type { SidebarCollection } from "@/lib/db/collections";
 import type { SidebarItemType } from "@/lib/db/item-types";
 import { DefaultIcon, iconMap } from "@/lib/icon-map";
-import { currentUser } from "@/lib/mock-data";
 import { cn, toPlural } from "@/lib/utils";
 
 type SidebarNavProps = {
   itemTypes: SidebarItemType[];
   recentCollections: SidebarCollection[];
   favoriteCollections: SidebarCollection[];
+  user: SidebarUser;
   onNavigate?: () => void;
 };
 
@@ -25,6 +26,7 @@ export function SidebarNav({
   itemTypes,
   recentCollections,
   favoriteCollections,
+  user,
   onNavigate,
 }: SidebarNavProps) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
@@ -43,7 +45,7 @@ export function SidebarNav({
               return (
                 <li key={t.id}>
                   <Link
-                    href={`/items/${t.name}s`}
+                    href={`/items/${toPlural(t.name).toLowerCase()}`}
                     onClick={onNavigate}
                     className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   >
@@ -176,21 +178,21 @@ export function SidebarNav({
 
       <footer className="flex items-center gap-3 border-t border-sidebar-border p-3">
         <Avatar>
-          <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+          <AvatarImage src={user.avatarUrl} alt={user.name} />
           <AvatarFallback>
-            {currentUser.name
+            {user.name
               .split(" ")
-              .map((n) => n[0])
+              .map((n: string) => n[0])
               .join("")
               .slice(0, 2)}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-sidebar-foreground">
-            {currentUser.name}
+            {user.name}
           </p>
           <p className="truncate text-xs text-muted-foreground">
-            {currentUser.plan}
+            {user.plan}
           </p>
         </div>
 

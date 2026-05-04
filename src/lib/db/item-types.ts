@@ -20,10 +20,10 @@ export type SidebarItemType = {
   count: number;
 };
 
-export async function getSidebarItemTypes(): Promise<SidebarItemType[]> {
+export async function getSidebarItemTypes(userId: string): Promise<SidebarItemType[]> {
   const types = await prisma.itemType.findMany({
     where: { isSystem: true },
-    include: { _count: { select: { items: true } } },
+    include: { _count: { select: { items: { where: { userId } } } } },
   });
 
   return types

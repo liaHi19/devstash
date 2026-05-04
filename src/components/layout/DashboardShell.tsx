@@ -13,6 +13,7 @@ export function DashboardShell({
   itemTypes,
   recentCollections,
   favoriteCollections,
+  user,
   children,
 }: Props) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -30,7 +31,7 @@ export function DashboardShell({
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           isMobile={isMobile}
-          sidebarData={{ itemTypes, recentCollections, favoriteCollections }}
+          sidebarData={{ itemTypes, recentCollections, favoriteCollections, user }}
         />
         <main className="flex-1 p-4 md:p-6 overflow-y-auto">{children}</main>
       </div>
