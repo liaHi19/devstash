@@ -15,3 +15,12 @@ export const getCurrentUserId = cache(async (): Promise<string> => {
   });
   return user.id;
 });
+
+export type SessionUser = { id: string; name: string | null; image: string | null; isPro: boolean };
+
+export const getCurrentUser = cache(async (): Promise<SessionUser> => {
+  return prisma.user.findFirstOrThrow({
+    where: { email: DEMO_EMAIL },
+    select: { id: true, name: true, image: true, isPro: true },
+  });
+});

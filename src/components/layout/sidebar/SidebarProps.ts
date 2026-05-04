@@ -3,10 +3,17 @@ import { ReactNode } from "react";
 import type { SidebarCollection } from "@/lib/db/collections";
 import type { SidebarItemType } from "@/lib/db/item-types";
 
+export type SidebarUser = {
+  name: string;
+  avatarUrl?: string;
+  plan: string;
+};
+
 export type SidebarData = {
   itemTypes: SidebarItemType[];
   recentCollections: SidebarCollection[];
   favoriteCollections: SidebarCollection[];
+  user: SidebarUser;
 };
 
 export type SidebarProps = {

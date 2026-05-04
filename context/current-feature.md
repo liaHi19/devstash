@@ -1,10 +1,19 @@
 # Current Feature
 
-## Code Audit Quick Wins
+## Code Audit Quick Wins (Round 2)
 
 ## Status
+Complete
 
 ## Goals
+
+- [x] Remove `currentUser` mock-data import from `SidebarNav` and `SidebarRail` — fetch real user from DB via `getCurrentUser()` in layout, pass as `SidebarUser` prop
+- [x] Add `fallback` prop to all three `<Suspense>` boundaries in `dashboard/page.tsx` with animated skeleton UIs
+- [x] Add `error.tsx` to `/dashboard`, `src/app/error.tsx`, and `src/app/global-error.tsx` for layered error recovery
+- [x] Add `loading.tsx` at both global (`src/app/`) and dashboard route level
+- [x] Fix URL pluralization in `SidebarNav` and `SidebarRail` — use `toPlural(t.name).toLowerCase()` instead of hardcoded `+s`
+- [x] Scope `getSidebarItemTypes()` item counts to the current user via `where: { userId }` in the `_count` select
+- [x] Replace `interface` keyword with `type` in `src/lib/mock-data.ts`
 
 ## History
 
@@ -24,3 +33,4 @@
 - 2026-04-30 — Completed Stats & Sidebar: added `getSidebarItemTypes()` (system types ordered by canonical sequence with per-type item counts via `_count`) and `getSidebarCollections()` (recent 3 + all favorites, each with dominant type color) to their respective `src/lib/db/` files; `dashboard/layout.tsx` converted to an async server component that fetches sidebar data and passes it as serializable props to new `DashboardShell` (client) which owns `sidebarOpen` / `isMobile` state; `SidebarProps` extended with `SidebarData` type; `Sidebar/index.tsx` threads `sidebarData` to `SidebarNav` (with `onNavigate`) and `SidebarRail`; `SidebarNav` refactored to accept `itemTypes`, `recentCollections`, `favoriteCollections`, `onNavigate` props (drops mock-data import); `SidebarRail` updated to accept `itemTypes` prop; added "View all collections →" link in the collections section.
 - 2026-05-02 — Completed Add Pro Badge to Sidebar: installed shadcn `badge` component; added an `outline` variant `Badge` displaying "PRO" next to the `file` and `image` item type entries in `SidebarNav` — positioned between the type label and the item count, styled small (`h-4`, `text-[10px]`) and muted so it reads as a subtle indicator without disrupting the nav layout.
 - 2026-05-03 — Completed Code Audit Quick Wins: extracted `iconMap` to `src/lib/icon-map.ts` (removes four duplicate definitions); added `toPlural` to `src/lib/utils.ts`; moved `getSidebarItemTypes()` to new `src/lib/db/item-types.ts`; wrapped `StatsCards`, `ItemsSectionWrapper`, and `CollectionsSection` in independent `Suspense` boundaries in `dashboard/page.tsx`; scoped all Prisma queries in `items.ts` and `collections.ts` to a `userId` parameter via new `src/lib/session.ts` (`getCurrentUserId`, React-cached, demo user lookup — swap for real auth session when NextAuth lands); `ItemCard` now passes only the 160-char `preview` slice to `highlight()`; replaced all `interface` prop types with `type` in `TopBar`, `ItemCard`, `CollectionCard`, `ItemsSection`, and `StatsCard`.
+- 2026-05-04 — Completed Code Audit Quick Wins Round 2: added `getCurrentUser()` to `session.ts` (returns name/image/isPro from DB); `dashboard/layout.tsx` fetches real demo user and builds `SidebarUser` prop (name, avatarUrl, plan) — no more hardcoded "John Doe"; `SidebarNav` and `SidebarRail` drop `currentUser` mock import, accept `user: SidebarUser` prop; `SidebarProps.ts` gains `SidebarUser` type and `user` field on `SidebarData`; URL slugs in both sidebar components now use `toPlural(t.name).toLowerCase()` instead of `+s` suffix; `getSidebarItemTypes(userId)` scopes `_count` to the current user; all four `interface` declarations in `mock-data.ts` converted to `type`; Suspense boundaries in `dashboard/page.tsx` get animated skeleton fallbacks; added `src/app/dashboard/error.tsx`, `src/app/dashboard/loading.tsx`, `src/app/error.tsx`, `src/app/global-error.tsx`, and `src/app/loading.tsx`.

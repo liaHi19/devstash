@@ -3,14 +3,20 @@
 import { Settings } from "lucide-react";
 import Link from "next/link";
 
+import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { SidebarItemType } from "@/lib/db/item-types";
 import { DefaultIcon, iconMap } from "@/lib/icon-map";
-import { currentUser } from "@/lib/mock-data";
 import { toPlural } from "@/lib/utils";
 
-export function SidebarRail({ itemTypes }: { itemTypes: SidebarItemType[] }) {
+export function SidebarRail({
+  itemTypes,
+  user,
+}: {
+  itemTypes: SidebarItemType[];
+  user: SidebarUser;
+}) {
   return (
     <div className="flex flex-1 flex-col">
       <ul className="flex flex-1 flex-col items-center gap-0.5 p-2">
@@ -20,7 +26,7 @@ export function SidebarRail({ itemTypes }: { itemTypes: SidebarItemType[] }) {
           return (
             <li key={t.id}>
               <Link
-                href={`/items/${t.name}s`}
+                href={`/items/${toPlural(t.name).toLowerCase()}`}
                 aria-label={label}
                 title={label}
                 className="flex size-9 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
@@ -38,11 +44,11 @@ export function SidebarRail({ itemTypes }: { itemTypes: SidebarItemType[] }) {
 
       <footer className="flex flex-col items-center gap-2 border-t border-sidebar-border p-3">
         <Avatar>
-          <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
+          <AvatarImage src={user.avatarUrl} alt={user.name} />
           <AvatarFallback>
-            {currentUser.name
+            {user.name
               .split(" ")
-              .map((n) => n[0])
+              .map((n: string) => n[0])
               .join("")
               .slice(0, 2)}
           </AvatarFallback>

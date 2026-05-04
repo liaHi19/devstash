@@ -1,17 +1,17 @@
 import { DashboardShell } from "@/components/layout/DashboardShell";
 import { getSidebarCollections } from "@/lib/db/collections";
 import { getSidebarItemTypes } from "@/lib/db/item-types";
-import { getCurrentUserId } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const userId = await getCurrentUserId();
+  const sessionUser = await getCurrentUser();
   const [itemTypes, { recent, favorites }] = await Promise.all([
-    getSidebarItemTypes(),
-    getSidebarCollections(userId),
+    getSidebarItemTypes(sessionUser.id),
+    getSidebarCollections(sessionUser.id),
   ]);
 
   return (
@@ -19,6 +19,11 @@ export default async function DashboardLayout({
       itemTypes={itemTypes}
       recentCollections={recent}
       favoriteCollections={favorites}
+      user={{
+        name: sessionUser.name ?? "User",
+        avatarUrl: sessionUser.image ?? undefined,
+        plan: sessionUser.isPro ? "Pro Plan" : "Free Plan",
+      }}
     >
       {children}
     </DashboardShell>

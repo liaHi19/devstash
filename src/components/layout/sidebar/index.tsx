@@ -19,7 +19,7 @@ export function Sidebar({
       {sidebarOpen ? (
         <SidebarNav {...sidebarData} />
       ) : (
-        <SidebarRail itemTypes={sidebarData.itemTypes} />
+        <SidebarRail itemTypes={sidebarData.itemTypes} user={sidebarData.user} />
       )}
     </DesktopSidebar>
   );
