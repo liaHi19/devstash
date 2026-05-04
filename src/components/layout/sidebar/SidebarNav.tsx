@@ -5,10 +5,10 @@ import { useState } from "react";
 import { ChevronDown, Settings, Star } from "lucide-react";
 import Link from "next/link";
 
+import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
 import type { SidebarCollection } from "@/lib/db/collections";
 import type { SidebarItemType } from "@/lib/db/item-types";
 import { DefaultIcon, iconMap } from "@/lib/icon-map";
@@ -191,9 +191,7 @@ export function SidebarNav({
           <p className="truncate text-sm font-medium text-sidebar-foreground">
             {user.name}
           </p>
-          <p className="truncate text-xs text-muted-foreground">
-            {user.plan}
-          </p>
+          <p className="truncate text-xs text-muted-foreground">{user.plan}</p>
         </div>
 
         <Button variant="ghost" size="icon" aria-label="Settings">

@@ -1,8 +1,8 @@
-import "server-only";
-
 import { cache } from "react";
 
 import { prisma } from "@/lib/db";
+
+import "server-only";
 
 const DEMO_EMAIL = "demo@devstash.io";
 
@@ -16,7 +16,12 @@ export const getCurrentUserId = cache(async (): Promise<string> => {
   return user.id;
 });
 
-export type SessionUser = { id: string; name: string | null; image: string | null; isPro: boolean };
+export type SessionUser = {
+  id: string;
+  name: string | null;
+  image: string | null;
+  isPro: boolean;
+};
 
 export const getCurrentUser = cache(async (): Promise<SessionUser> => {
   return prisma.user.findFirstOrThrow({

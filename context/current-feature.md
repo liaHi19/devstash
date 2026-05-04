@@ -1,19 +1,8 @@
 # Current Feature
 
-## Code Audit Quick Wins (Round 2)
-
 ## Status
-Complete
 
 ## Goals
-
-- [x] Remove `currentUser` mock-data import from `SidebarNav` and `SidebarRail` — fetch real user from DB via `getCurrentUser()` in layout, pass as `SidebarUser` prop
-- [x] Add `fallback` prop to all three `<Suspense>` boundaries in `dashboard/page.tsx` with animated skeleton UIs
-- [x] Add `error.tsx` to `/dashboard`, `src/app/error.tsx`, and `src/app/global-error.tsx` for layered error recovery
-- [x] Add `loading.tsx` at both global (`src/app/`) and dashboard route level
-- [x] Fix URL pluralization in `SidebarNav` and `SidebarRail` — use `toPlural(t.name).toLowerCase()` instead of hardcoded `+s`
-- [x] Scope `getSidebarItemTypes()` item counts to the current user via `where: { userId }` in the `_count` select
-- [x] Replace `interface` keyword with `type` in `src/lib/mock-data.ts`
 
 ## History
 
