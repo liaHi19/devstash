@@ -1,8 +1,28 @@
-# Current Feature
+# Current Feature: Auth Setup - NextAuth + GitHub Provider
 
 ## Status
 
+Complete
+
 ## Goals
+
+- Install `next-auth@beta` and `@auth/prisma-adapter`
+- Set up split auth config pattern for edge compatibility (`src/auth.config.ts` + `src/auth.ts`)
+- Add GitHub OAuth provider
+- Create API route handler at `src/app/api/auth/[...nextauth]/route.ts`
+- Protect `/dashboard/*` routes via `src/proxy.ts` with redirect to sign-in for unauthenticated users
+- Extend Session type with `user.id` in `src/types/next-auth.d.ts`
+- Use NextAuth's default sign-in page (no custom `pages.signIn`)
+
+## Notes
+
+- Use `next-auth@beta` — `@latest` installs v4
+- Proxy file must live at `src/proxy.ts` (same level as `app/`) — Next.js 16 uses `proxy.ts` not `middleware.ts`
+- Named export: `export const proxy = auth(...)` (not default export)
+- Use `session: { strategy: 'jwt' }` with split config
+- Environment variables needed: `BETTER_AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`
+- Use Context7 to verify latest NextAuth v5 config and conventions before writing code
+- Testing: `/dashboard` should redirect unauthenticated users → sign in with GitHub → redirect back to `/dashboard`
 
 ## History
 
@@ -23,3 +43,4 @@
 - 2026-05-02 — Completed Add Pro Badge to Sidebar: installed shadcn `badge` component; added an `outline` variant `Badge` displaying "PRO" next to the `file` and `image` item type entries in `SidebarNav` — positioned between the type label and the item count, styled small (`h-4`, `text-[10px]`) and muted so it reads as a subtle indicator without disrupting the nav layout.
 - 2026-05-03 — Completed Code Audit Quick Wins: extracted `iconMap` to `src/lib/icon-map.ts` (removes four duplicate definitions); added `toPlural` to `src/lib/utils.ts`; moved `getSidebarItemTypes()` to new `src/lib/db/item-types.ts`; wrapped `StatsCards`, `ItemsSectionWrapper`, and `CollectionsSection` in independent `Suspense` boundaries in `dashboard/page.tsx`; scoped all Prisma queries in `items.ts` and `collections.ts` to a `userId` parameter via new `src/lib/session.ts` (`getCurrentUserId`, React-cached, demo user lookup — swap for real auth session when NextAuth lands); `ItemCard` now passes only the 160-char `preview` slice to `highlight()`; replaced all `interface` prop types with `type` in `TopBar`, `ItemCard`, `CollectionCard`, `ItemsSection`, and `StatsCard`.
 - 2026-05-04 — Completed Code Audit Quick Wins Round 2: added `getCurrentUser()` to `session.ts` (returns name/image/isPro from DB); `dashboard/layout.tsx` fetches real demo user and builds `SidebarUser` prop (name, avatarUrl, plan) — no more hardcoded "John Doe"; `SidebarNav` and `SidebarRail` drop `currentUser` mock import, accept `user: SidebarUser` prop; `SidebarProps.ts` gains `SidebarUser` type and `user` field on `SidebarData`; URL slugs in both sidebar components now use `toPlural(t.name).toLowerCase()` instead of `+s` suffix; `getSidebarItemTypes(userId)` scopes `_count` to the current user; all four `interface` declarations in `mock-data.ts` converted to `type`; Suspense boundaries in `dashboard/page.tsx` get animated skeleton fallbacks; added `src/app/dashboard/error.tsx`, `src/app/dashboard/loading.tsx`, `src/app/error.tsx`, `src/app/global-error.tsx`, and `src/app/loading.tsx`.
+- 2026-05-05 — Completed Auth Setup: installed `next-auth@beta` and `@auth/prisma-adapter`; split config into `src/auth.config.ts` (GitHub provider + `authorized` callback protecting `/dashboard/*`) and `src/auth.ts` (PrismaAdapter, JWT strategy, session callback injecting `user.id` from `token.sub`); API handler at `src/app/api/auth/[...nextauth]/route.ts` re-exports `{ GET, POST }` from handlers; `src/proxy.ts` exports `proxy = NextAuth(authConfig).auth` (named export, edge-safe) with a matcher that skips static assets; `src/types/next-auth.d.ts` extends `Session` with `user.id`; added `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` to `.env.example`; updated `.gitignore` to exclude `.env`.

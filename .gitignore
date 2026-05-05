@@ -41,8 +41,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# local MCP config (may contain API keys)
-.mcp.json
+# # local MCP config (may contain API keys)
+# .mcp.json
 
 # prisma generated client (regenerated via `prisma generate`)
 /src/generated
