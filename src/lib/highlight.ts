@@ -1,6 +1,6 @@
-import "server-only";
+import { type BundledLanguage, codeToHtml } from "shiki";
 
-import { codeToHtml, type BundledLanguage } from "shiki";
+import "server-only";
 
 const supported = new Set<BundledLanguage>([
   "typescript",
@@ -28,6 +28,7 @@ export async function highlight(
 
   const finalLang = (aliases[lang] ?? lang) as BundledLanguage;
   if (!supported.has(finalLang)) return null;
+
   return codeToHtml(code, {
     lang: finalLang,
     theme: "github-dark-default",

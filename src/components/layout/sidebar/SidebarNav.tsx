@@ -1,46 +1,23 @@
 "use client";
 
-import {
-  ChevronDown,
-  Code,
-  File as FileIcon,
-  Image as ImageIcon,
-  Link as LinkIcon,
-  Settings,
-  Sparkles,
-  Star,
-  StickyNote,
-  Terminal,
-  type LucideIcon,
-} from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, Star } from "lucide-react";
+import Link from "next/link";
+
+import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
+import { UserMenu } from "@/components/layout/sidebar/UserMenu";
+import { Badge } from "@/components/ui/badge";
 import type { SidebarCollection } from "@/lib/db/collections";
-import type { SidebarItemType } from "@/lib/db/items";
-import { currentUser } from "@/lib/mock-data";
-import { cn } from "@/lib/utils";
-
-const iconMap: Record<string, LucideIcon> = {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File: FileIcon,
-  Image: ImageIcon,
-  Link: LinkIcon,
-};
-
-function toPlural(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1) + "s";
-}
+import type { SidebarItemType } from "@/lib/db/item-types";
+import { DefaultIcon, iconMap } from "@/lib/icon-map";
+import { cn, toPlural } from "@/lib/utils";
 
 type SidebarNavProps = {
   itemTypes: SidebarItemType[];
   recentCollections: SidebarCollection[];
   favoriteCollections: SidebarCollection[];
+  user: SidebarUser;
   onNavigate?: () => void;
 };
 
@@ -48,6 +25,7 @@ export function SidebarNav({
   itemTypes,
   recentCollections,
   favoriteCollections,
+  user,
   onNavigate,
 }: SidebarNavProps) {
   const [collectionsOpen, setCollectionsOpen] = useState(true);
@@ -62,11 +40,11 @@ export function SidebarNav({
           </h3>
           <ul className="flex flex-col gap-0.5">
             {itemTypes.map((t) => {
-              const Icon = iconMap[t.icon] ?? Code;
+              const Icon = iconMap[t.icon] ?? DefaultIcon;
               return (
                 <li key={t.id}>
                   <Link
-                    href={`/items/${t.name}s`}
+                    href={`/items/${toPlural(t.name).toLowerCase()}`}
                     onClick={onNavigate}
                     className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                   >
@@ -76,6 +54,14 @@ export function SidebarNav({
                       style={{ color: t.color }}
                     />
                     <span className="flex-1 truncate">{toPlural(t.name)}</span>
+                    {(t.name === "file" || t.name === "image") && (
+                      <Badge
+                        variant="outline"
+                        className="h-4 rounded px-1 py-0 text-[10px] font-semibold tracking-wide text-muted-foreground"
+                      >
+                        PRO
+                      </Badge>
+                    )}
                     <span className="text-xs text-muted-foreground tabular-nums">
                       {t.count}
                     </span>
@@ -190,28 +176,17 @@ export function SidebarNav({
       </div>
 
       <footer className="flex items-center gap-3 border-t border-sidebar-border p-3">
-        <Avatar>
-          <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
-          <AvatarFallback>
-            {currentUser.name
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)}
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 flex-1">
+        <UserMenu name={user.name} avatarUrl={user.avatarUrl} />
+        <Link
+          href="/profile"
+          onClick={onNavigate}
+          className="min-w-0 flex-1 rounded-md px-1 py-0.5 hover:bg-sidebar-accent"
+        >
           <p className="truncate text-sm font-medium text-sidebar-foreground">
-            {currentUser.name}
+            {user.name}
           </p>
-          <p className="truncate text-xs text-muted-foreground">
-            {currentUser.plan}
-          </p>
-        </div>
-
-        <Button variant="ghost" size="icon" aria-label="Settings">
-          <Settings className="size-4" />
-        </Button>
+          <p className="truncate text-xs text-muted-foreground">{user.plan}</p>
+        </Link>
       </footer>
     </div>
   );

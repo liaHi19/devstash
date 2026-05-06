@@ -1,9 +1,9 @@
-import "dotenv/config";
-
-import { PrismaNeon } from "@prisma/adapter-neon";
 import bcrypt from "bcryptjs";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 import { PrismaClient } from "../src/generated/prisma/client";
+
+import "dotenv/config";
 
 const DEMO_EMAIL = "demo@devstash.io";
 const DEMO_NAME = "Demo User";
@@ -389,12 +389,19 @@ async function main() {
             data: { icon: t.icon, color: t.color, isSystem: true },
           })
         : await prisma.itemType.create({
-            data: { name: t.name, icon: t.icon, color: t.color, isSystem: true },
+            data: {
+              name: t.name,
+              icon: t.icon,
+              color: t.color,
+              isSystem: true,
+            },
           });
       typeByName.set(t.name, { id: row.id });
     }
 
-    console.log("→ Resetting demo user's collections + items (for idempotency)");
+    console.log(
+      "→ Resetting demo user's collections + items (for idempotency)",
+    );
     await prisma.item.deleteMany({ where: { userId: user.id } });
     await prisma.collection.deleteMany({ where: { userId: user.id } });
 

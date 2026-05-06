@@ -1,6 +1,12 @@
-import { FolderPlus, Plus, Search, SlidersHorizontal } from "lucide-react";
+import {
+  FolderPlus,
+  PanelLeft,
+  PanelLeftClose,
+  Plus,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 
-import { PageTitle } from "@/components/layout/PageTitle";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { ViewModeToggle } from "@/components/layout/ViewModeToggle";
 import { Button } from "@/components/ui/button";
@@ -12,23 +18,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
+import { APP_NAME } from "@/lib/constants";
 
-interface TopBarProps {
+type TopBarProps = {
   sidebarOpen: boolean;
   isMobile: boolean;
   setSidebarOpen: (sidebarOpen: boolean) => void;
-}
+};
 
 export function TopBar({ sidebarOpen, isMobile, setSidebarOpen }: TopBarProps) {
   return (
-    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-2 md:h-14 md:flex-nowrap md:gap-4 md:py-0 md:px-6">
-      {!sidebarOpen && (
-        <PageTitle
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          isTopBar={!isMobile}
-        />
-      )}
+    <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background px-4 py-2 md:h-(--topbar-height) md:flex-nowrap md:gap-4 md:py-0 md:px-6">
+      <div className="flex items-center gap-4">
+        {isMobile && (
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+          >
+            {sidebarOpen ? (
+              <PanelLeftClose className="size-4" />
+            ) : (
+              <PanelLeft className="size-4" />
+            )}
+          </Button>
+        )}
+
+        <h1 className="truncate text-lg font-semibold tracking-tight">
+          {APP_NAME}
+        </h1>
+      </div>
 
       <search className="relative order-3 block w-full md:order-2 md:mx-auto md:w-full md:max-w-xl">
         <Search

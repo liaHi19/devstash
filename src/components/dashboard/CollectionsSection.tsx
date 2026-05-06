@@ -2,9 +2,11 @@ import Link from "next/link";
 
 import { CollectionCard } from "@/components/dashboard/CollectionCard";
 import { getRecentCollections } from "@/lib/db/collections";
+import { getCurrentUserId } from "@/lib/session";
 
 export async function CollectionsSection() {
-  const collections = await getRecentCollections(6);
+  const userId = await getCurrentUserId();
+  const collections = await getRecentCollections(userId, 6);
 
   return (
     <section className="flex flex-col gap-3">

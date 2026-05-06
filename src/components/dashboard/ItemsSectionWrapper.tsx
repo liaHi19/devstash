@@ -1,12 +1,14 @@
 import { ItemList } from "@/components/dashboard/ItemList";
 import { ItemsSection } from "@/components/dashboard/ItemsSection";
 import { getFavoriteItems, getPinnedItems, getRecentItems } from "@/lib/db/items";
+import { getCurrentUserId } from "@/lib/session";
 
 export async function ItemsSectionWrapper() {
+  const userId = await getCurrentUserId();
   const [recentItems, pinnedItems, favoriteItems] = await Promise.all([
-    getRecentItems(10),
-    getPinnedItems(),
-    getFavoriteItems(),
+    getRecentItems(userId, 10),
+    getPinnedItems(userId),
+    getFavoriteItems(userId),
   ]);
 
   return (

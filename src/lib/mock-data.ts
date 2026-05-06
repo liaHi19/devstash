@@ -9,7 +9,7 @@ export type ItemTypeSlug =
   | "image"
   | "link";
 
-export interface ItemType {
+export type ItemType = {
   id: string;
   slug: ItemTypeSlug;
   name: string;
@@ -20,7 +20,7 @@ export interface ItemType {
   isPro: boolean;
 }
 
-export interface Collection {
+export type Collection = {
   id: string;
   name: string;
   description: string;
@@ -29,7 +29,7 @@ export interface Collection {
   itemCount: number;
 }
 
-export interface Item {
+export type Item = {
   id: string;
   title: string;
   typeSlug: ItemTypeSlug;
@@ -45,7 +45,7 @@ export interface Item {
   updatedAt: string;
 }
 
-export interface User {
+export type User = {
   id: string;
   name: string;
   email: string;

@@ -6,11 +6,11 @@ import type { ReactNode } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface ItemsSectionProps {
+type ItemsSectionProps = {
   recent: ReactNode;
   pinned: ReactNode;
   favorites: ReactNode;
-}
+};
 
 export function ItemsSection({ recent, pinned, favorites }: ItemsSectionProps) {
   return (

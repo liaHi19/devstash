@@ -70,3 +70,10 @@ Add new routes by creating `page.tsx` inside a new folder under `src/app/`. Shar
   - Driver adapter (`@prisma/adapter-neon`) is mandatory — `new PrismaClient({ adapter })`.
   - No automatic seeding — run `prisma db seed` explicitly when we add a seed script.
   - Removed `prisma.$use()` middleware — use `prisma.$extends()` instead.
+
+## Neon MCP
+
+- **Project:** always use the `devstash` project when calling Neon MCP tools.
+- **Branch:** always use the `development` branch by default.
+- **Production is off-limits:** never read from, write to, run queries against, or alter the `production` branch (or any branch connected to the production `DATABASE_URL`) unless I explicitly say "use production" or "production branch" in that message.
+- If you are unsure which branch a Neon MCP operation targets, ask before proceeding.
