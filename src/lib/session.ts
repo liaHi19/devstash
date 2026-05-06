@@ -1,19 +1,16 @@
 import { cache } from "react";
 
+import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
 
 import "server-only";
 
-const DEMO_EMAIL = "demo@devstash.io";
-
-// Temporary: returns the seeded demo user's ID.
-// Replace with real auth session lookup once NextAuth lands.
 export const getCurrentUserId = cache(async (): Promise<string> => {
-  const user = await prisma.user.findFirstOrThrow({
-    where: { email: DEMO_EMAIL },
-    select: { id: true },
-  });
-  return user.id;
+  const session = await auth();
+  if (!session?.user?.id) {
+    throw new Error("Not authenticated");
+  }
+  return session.user.id;
 });
 
 export type SessionUser = {
@@ -24,8 +21,10 @@ export type SessionUser = {
 };
 
 export const getCurrentUser = cache(async (): Promise<SessionUser> => {
-  return prisma.user.findFirstOrThrow({
-    where: { email: DEMO_EMAIL },
+  const id = await getCurrentUserId();
+
+  return prisma.user.findUniqueOrThrow({
+    where: { id },
     select: { id: true, name: true, image: true, isPro: true },
   });
 });

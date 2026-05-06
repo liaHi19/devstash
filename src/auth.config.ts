@@ -2,7 +2,12 @@ import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 
+import { PROTECTED_ROUTES } from "@/lib/constants";
+
 export const authConfig = {
+  pages: {
+    signIn: "/sign-in",
+  },
   providers: [
     GitHub,
     Credentials({
@@ -16,8 +21,11 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isDashboard = nextUrl.pathname.startsWith("/dashboard");
-      if (isDashboard) return isLoggedIn;
+      const path = nextUrl.pathname;
+      const isProtected = PROTECTED_ROUTES.some((route) =>
+        path.startsWith(route),
+      );
+      if (isProtected) return isLoggedIn;
       return true;
     },
   },
