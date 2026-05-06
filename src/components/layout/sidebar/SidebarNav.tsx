@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 
-import { ChevronDown, Settings, Star } from "lucide-react";
+import { ChevronDown, Star } from "lucide-react";
 import Link from "next/link";
 
 import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserMenu } from "@/components/layout/sidebar/UserMenu";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import type { SidebarCollection } from "@/lib/db/collections";
 import type { SidebarItemType } from "@/lib/db/item-types";
 import { DefaultIcon, iconMap } from "@/lib/icon-map";
@@ -177,26 +176,17 @@ export function SidebarNav({
       </div>
 
       <footer className="flex items-center gap-3 border-t border-sidebar-border p-3">
-        <Avatar>
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
-          <AvatarFallback>
-            {user.name
-              .split(" ")
-              .map((n: string) => n[0])
-              .join("")
-              .slice(0, 2)}
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 flex-1">
+        <UserMenu name={user.name} avatarUrl={user.avatarUrl} />
+        <Link
+          href="/profile"
+          onClick={onNavigate}
+          className="min-w-0 flex-1 rounded-md px-1 py-0.5 hover:bg-sidebar-accent"
+        >
           <p className="truncate text-sm font-medium text-sidebar-foreground">
             {user.name}
           </p>
           <p className="truncate text-xs text-muted-foreground">{user.plan}</p>
-        </div>
-
-        <Button variant="ghost" size="icon" aria-label="Settings">
-          <Settings className="size-4" />
-        </Button>
+        </Link>
       </footer>
     </div>
   );

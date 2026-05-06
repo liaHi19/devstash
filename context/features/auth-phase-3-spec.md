@@ -47,3 +47,6 @@ Create a reusable avatar component that handles both cases.
 5. Click avatar - verify dropdown appears
 6. Click "Sign out" - verify logout and redirect
 7. Go to `/register` - create new account - verify redirect to sign-in
+
+## References
+- @context/features/forms-spec.md

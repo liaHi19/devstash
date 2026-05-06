@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 
 import "./globals.css";
@@ -39,6 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="bg-background text-foreground">{children}</div>
+          <Toaster richColors position="top-right" />
         </ThemeProvider>
       </body>
     </html>

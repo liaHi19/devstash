@@ -1,11 +1,9 @@
 "use client";
 
-import { Settings } from "lucide-react";
 import Link from "next/link";
 
 import type { SidebarUser } from "@/components/layout/sidebar/SidebarProps";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/layout/sidebar/UserMenu";
 import type { SidebarItemType } from "@/lib/db/item-types";
 import { DefaultIcon, iconMap } from "@/lib/icon-map";
 import { toPlural } from "@/lib/utils";
@@ -43,19 +41,7 @@ export function SidebarRail({
       </ul>
 
       <footer className="flex flex-col items-center gap-2 border-t border-sidebar-border p-3">
-        <Avatar>
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
-          <AvatarFallback>
-            {user.name
-              .split(" ")
-              .map((n: string) => n[0])
-              .join("")
-              .slice(0, 2)}
-          </AvatarFallback>
-        </Avatar>
-        <Button variant="ghost" size="icon" aria-label="Settings">
-          <Settings className="size-4" />
-        </Button>
+        <UserMenu name={user.name} avatarUrl={user.avatarUrl} side="right" />
       </footer>
     </div>
   );
