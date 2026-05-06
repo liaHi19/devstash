@@ -1,22 +1,10 @@
-# Current Feature: Auth UI — Sign In, Register & Sign Out
+# Current Feature:
 
 ## Status
 
-Complete
-
 ## Goals
 
-- Custom `/sign-in` page with email/password inputs, "Sign in with GitHub" button, link to register, validation + error display.
-- Custom `/register` page with name/email/password/confirm fields, validation (passwords match, email format), submit to `/api/auth/register`, redirect to sign-in on success.
-- Sidebar bottom: avatar (GitHub image or initials fallback), user name, dropdown with "Sign out"; clicking the avatar/icon navigates to `/profile`.
-- Reusable Avatar component handling image-or-initials logic (e.g. "Brad Traversy" → "BT").
-
 ## Notes
-
-- Forms: React-Hook-Form (`mode: "onBlur"`) + Zod v4 schemas shared between client and server; shadcn `Form` primitives; frontend errors via `<FormMessage />`, backend errors via toast.
-- For action calls needing extra/searchParams values: use `useActionState` + `startTransition` with a `FormData` payload (see forms-spec example).
-- Replaces NextAuth default pages; keeps existing GitHub OAuth + Credentials providers from `auth.config.ts` / `auth.ts`.
-- Testing: verify `/sign-in` GitHub flow, `/sign-in` email/password flow, avatar rendering (image + initials), dropdown sign-out, `/register` creates account and redirects.
 
 ## History
 
