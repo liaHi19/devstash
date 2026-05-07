@@ -4,6 +4,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 
+import { SKIP_EMAIL_VERIFICATION } from "@/lib/constants";
 import { prisma } from "@/lib/db";
 
 import { authConfig } from "./auth.config";
@@ -28,6 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           user.password,
         );
         if (!valid) return null;
+        if (!SKIP_EMAIL_VERIFICATION && !user.emailVerified) return null;
         return {
           id: user.id,
           name: user.name,

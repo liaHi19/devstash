@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -19,7 +21,30 @@ import {
 import { Input } from "@/components/ui/input";
 import { type SignInInput, signInSchema } from "@/lib/schemas/auth";
 
+const TOKEN_ERROR_MESSAGES: Record<string, string> = {
+  "invalid-token": "That verification link is invalid.",
+  "expired-token": "That verification link has expired. Please request a new one.",
+};
+
 export function SignInForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const flashedRef = useRef(false);
+
+  useEffect(() => {
+    if (flashedRef.current) return;
+    flashedRef.current = true;
+
+    if (searchParams.get("verified") === "1") {
+      toast.success("Email verified! You can now sign in.");
+      return;
+    }
+    const error = searchParams.get("error");
+    if (error && TOKEN_ERROR_MESSAGES[error]) {
+      toast.error(TOKEN_ERROR_MESSAGES[error]);
+    }
+  }, [searchParams]);
+
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
@@ -29,6 +54,10 @@ export function SignInForm() {
   const onSubmit = form.handleSubmit(async (data) => {
     const result = await signInWithCredentials(data);
     if (!result.success) {
+      if (result.code === "unverified") {
+        router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
+        return;
+      }
       toast.error(result.error);
     }
   });
@@ -75,7 +104,7 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isValidBtn} className="w-full">
+        <Button type="submit" disabled={!isValidBtn} className="w-full">
           {isSubmitting ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (

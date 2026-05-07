@@ -39,8 +39,12 @@ export function RegisterForm() {
       toast.error(result.error);
       return;
     }
-    toast.success("Account created. Please sign in.");
-    router.push("/sign-in");
+    if (result.code === "verification_skipped") {
+      toast.success("Account created. You can sign in now.");
+      router.push("/sign-in");
+      return;
+    }
+    router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
   });
 
   const { isSubmitting, isDirty, isValid } = form.formState;
@@ -90,7 +94,7 @@ export function RegisterForm() {
                 <Input
                   type="password"
                   autoComplete="new-password"
-                  placeholder="your password"
+                  placeholder="Your password"
                   {...field}
                 />
               </FormControl>
@@ -116,7 +120,7 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isValidBtn} className="w-full">
+        <Button type="submit" disabled={!isValidBtn} className="w-full">
           {isSubmitting ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
