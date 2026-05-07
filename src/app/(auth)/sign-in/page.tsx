@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import Link from "next/link";
 
 import { SignInForm } from "@/components/auth/SignInForm";
@@ -11,7 +13,9 @@ export default function SignInPage() {
           Sign in to your DevStash account
         </p>
       </div>
-      <SignInForm />
+      <Suspense fallback={null}>
+        <SignInForm />
+      </Suspense>
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}
         <Link
