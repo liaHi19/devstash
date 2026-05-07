@@ -1,7 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -23,7 +21,6 @@ import { type RegisterInput, registerSchema } from "@/lib/schemas/auth";
 
 export function RegisterForm() {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
@@ -36,17 +33,18 @@ export function RegisterForm() {
     },
   });
 
-  const onSubmit = form.handleSubmit((data) => {
-    startTransition(async () => {
-      const result = await registerUser(data);
-      if (!result.success) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success("Account created. Please sign in.");
-      router.push("/sign-in");
-    });
+  const onSubmit = form.handleSubmit(async (data) => {
+    const result = await registerUser(data);
+    if (!result.success) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success("Account created. Please sign in.");
+    router.push("/sign-in");
   });
+
+  const { isSubmitting, isDirty, isValid } = form.formState;
+  const isValidBtn = !isSubmitting || isDirty || isValid;
 
   return (
     <Form {...form}>
@@ -74,7 +72,7 @@ export function RegisterForm() {
                 <Input
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder="youremail@example.com"
                   {...field}
                 />
               </FormControl>
@@ -92,7 +90,7 @@ export function RegisterForm() {
                 <Input
                   type="password"
                   autoComplete="new-password"
-                  placeholder="At least 8 characters"
+                  placeholder="your password"
                   {...field}
                 />
               </FormControl>
@@ -110,7 +108,7 @@ export function RegisterForm() {
                 <Input
                   type="password"
                   autoComplete="new-password"
-                  placeholder="Repeat password"
+                  placeholder="Confirm your password"
                   {...field}
                 />
               </FormControl>
@@ -118,8 +116,8 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? (
+        <Button type="submit" disabled={isValidBtn} className="w-full">
+          {isSubmitting ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
             "Create account"

@@ -1,22 +1,10 @@
-# Current Feature: Auth UI — Sign In, Register & Sign Out
+# Current Feature:
 
 ## Status
 
-Complete
-
 ## Goals
 
-- Custom `/sign-in` page with email/password inputs, "Sign in with GitHub" button, link to register, validation + error display.
-- Custom `/register` page with name/email/password/confirm fields, validation (passwords match, email format), submit to `/api/auth/register`, redirect to sign-in on success.
-- Sidebar bottom: avatar (GitHub image or initials fallback), user name, dropdown with "Sign out"; clicking the avatar/icon navigates to `/profile`.
-- Reusable Avatar component handling image-or-initials logic (e.g. "Brad Traversy" → "BT").
-
 ## Notes
-
-- Forms: React-Hook-Form (`mode: "onBlur"`) + Zod v4 schemas shared between client and server; shadcn `Form` primitives; frontend errors via `<FormMessage />`, backend errors via toast.
-- For action calls needing extra/searchParams values: use `useActionState` + `startTransition` with a `FormData` payload (see forms-spec example).
-- Replaces NextAuth default pages; keeps existing GitHub OAuth + Credentials providers from `auth.config.ts` / `auth.ts`.
-- Testing: verify `/sign-in` GitHub flow, `/sign-in` email/password flow, avatar rendering (image + initials), dropdown sign-out, `/register` creates account and redirects.
 
 ## History
 
@@ -40,3 +28,4 @@ Complete
 - 2026-05-05 — Completed Auth Setup: installed `next-auth@beta` and `@auth/prisma-adapter`; split config into `src/auth.config.ts` (GitHub provider + `authorized` callback protecting `/dashboard/*`) and `src/auth.ts` (PrismaAdapter, JWT strategy, session callback injecting `user.id` from `token.sub`); API handler at `src/app/api/auth/[...nextauth]/route.ts` re-exports `{ GET, POST }` from handlers; `src/proxy.ts` exports `proxy = NextAuth(authConfig).auth` (named export, edge-safe) with a matcher that skips static assets; `src/types/next-auth.d.ts` extends `Session` with `user.id`; added `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET` to `.env.example`; updated `.gitignore` to exclude `.env`.
 - 2026-05-05 — Completed Auth Credentials (Email/Password): added Credentials provider to `auth.config.ts` (edge-safe `authorize: () => null` placeholder) and `auth.ts` (real bcrypt validation — looks up user by email, compares hashed password, returns user object on success); `password String?` column already existed from the seed migration; created `POST /api/auth/register` route (validates all fields present, passwords match, min 8 chars, 409 on existing email, bcrypt 12 rounds, returns `{ success, user }` on 201); GitHub OAuth unaffected.
 - 2026-05-06 — Completed Auth UI (Sign In / Register / Sign Out): installed shadcn `form`, `label`, `sonner`, added `Toaster` (richColors, top-right) to `RootLayout`; shared Zod v4 schemas in `src/lib/schemas/auth.ts` (`signInSchema`, `registerSchema` with `superRefine` password match) reused by `/api/auth/register` (now `safeParse`-validated) and the forms; `(auth)` route group with shared `layout.tsx` and `/sign-in` + `/register` pages, plus `SignInForm` / `RegisterForm` (React-Hook-Form `mode: "onBlur"`, shadcn `Form` primitives, `<FormMessage />` for field errors, toast for backend errors) and "Sign in with GitHub" button (custom `public/github.svg`); server actions in `src/actions/auth.ts` (`signInAction`, `registerAction`, `signOutAction`) wrap NextAuth `signIn`/`signOut` and the register API; `auth.config.ts` gains `pages.signIn: "/sign-in"` and a `PROTECTED_ROUTES` prefix list (`/dashboard`, `/profile`, `/settings`) in `src/lib/constants.ts` driving the `authorized` callback; `src/lib/session.ts` swapped from demo-user lookup to real `auth()` session (`getCurrentUserId` throws if unauthenticated, `getCurrentUser` queries by id); new `UserAvatar` component (image-or-initials fallback, e.g. "Brad Traversy" → "BT") and `UserMenu` dropdown (sign out + link to `/profile`) wired into `SidebarNav` / `SidebarRail` footers; minimal `/profile` page placeholder.
+- 2026-05-07 — Completed Fix GitHub OAuth Redirect: switched both providers to server-side `signIn` from `@/auth` to fix the double-click issue (client-side `next-auth/react` `signIn` had unreliable redirect timing in production). `src/actions/auth.ts` gains `signInWithGitHub` (`signIn("github", { redirectTo: "/dashboard" })`) and `signInWithCredentials` (validates with `signInSchema`, calls `signIn("credentials", { ..., redirectTo: "/dashboard" })`, catches `AuthError` to return "Invalid email or password." while re-throwing the `NEXT_REDIRECT` on success). `SignInForm` drops `next-auth/react`, `useRouter`, `useSearchParams`, and `useTransition`; credentials submit uses RHF async `handleSubmit` with `formState.isSubmitting`; GitHub button moved into its own `<form action={signInWithGitHub}>`. `RegisterForm` likewise drops `useTransition` in favor of async `handleSubmit` + `isSubmitting`.

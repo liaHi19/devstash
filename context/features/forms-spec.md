@@ -11,12 +11,19 @@ General setup for forms
 - shadcn ui for form layout https://ui.shadcn.com/docs/forms/react-hook-form
 - frontend error - `<FormMessage />`
 - backend error - toast
+- disabled submit button if form is not valid
 - if need use params value together with form (searchParams) or additional value that it's not in form directly:
   - useActionState
   - startTransition
   - example:
 
   ```jsx
+  // signUpUser is server action
+  const [data, action] = useActionState(signUpUser, {
+    success: false,
+    message: "",
+  });
+
   const onSubmit = form.handleSubmit((data) => {
     const formData = new FormData();
 
