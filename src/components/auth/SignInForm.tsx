@@ -1,15 +1,12 @@
 "use client";
 
-import { useTransition } from "react";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { signInWithCredentials, signInWithGitHub } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,32 +20,21 @@ import { Input } from "@/components/ui/input";
 import { type SignInInput, signInSchema } from "@/lib/schemas/auth";
 
 export function SignInForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
-  const [isPending, startTransition] = useTransition();
-
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     mode: "onBlur",
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = form.handleSubmit((data) => {
-    startTransition(async () => {
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-      if (result?.error) {
-        toast.error("Invalid email or password.");
-        return;
-      }
-      router.push(callbackUrl);
-      router.refresh();
-    });
+  const onSubmit = form.handleSubmit(async (data) => {
+    const result = await signInWithCredentials(data);
+    if (!result.success) {
+      toast.error(result.error);
+    }
   });
+
+  const { isSubmitting, isDirty, isValid } = form.formState;
+  const isValidBtn = !isSubmitting || isDirty || isValid;
 
   return (
     <Form {...form}>
@@ -63,7 +49,7 @@ export function SignInForm() {
                 <Input
                   type="email"
                   autoComplete="email"
-                  placeholder="you@example.com"
+                  placeholder="youremail@example.com"
                   {...field}
                 />
               </FormControl>
@@ -81,7 +67,7 @@ export function SignInForm() {
                 <Input
                   type="password"
                   autoComplete="current-password"
-                  placeholder="••••••••"
+                  placeholder="your password"
                   {...field}
                 />
               </FormControl>
@@ -89,8 +75,12 @@ export function SignInForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={isPending} className="w-full">
-          {isPending ? <Loader2 className="size-4 animate-spin" /> : "Sign in"}
+        <Button type="submit" disabled={isValidBtn} className="w-full">
+          {isSubmitting ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            "Sign in"
+          )}
         </Button>
 
         <div className="relative my-2 flex items-center">
@@ -100,13 +90,14 @@ export function SignInForm() {
           </span>
           <span className="h-px flex-1 bg-border" />
         </div>
+      </form>
 
+      <form action={signInWithGitHub}>
         <Button
-          type="button"
+          type="submit"
           variant="outline"
           className="w-full"
-          onClick={() => signIn("github", { callbackUrl })}
-          disabled={isPending}
+          disabled={isSubmitting}
         >
           <Image
             src="/github.svg"
