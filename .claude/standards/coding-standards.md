@@ -7,13 +7,6 @@
 - Define types over interfaces for all props, API responses, and data models
 - Use type inference where obvious, explicit types where helpful
 
-## React
-
-- Functional components only (no class components)
-- Use hooks for state and side effects
-- Keep components focused - one job per component
-- Extract reusable logic into custom hooks
-
 ## Next.js
 
 - Server components by default
